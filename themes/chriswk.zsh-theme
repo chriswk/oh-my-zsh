@@ -76,13 +76,13 @@ local current_dir='%{$terminfo[bold]$fg[blue]%} %~%{$reset_color%}'
 local rvm_ruby='%{$fg[red]%}‹$(rvm-prompt i v g)›%{$reset_color%}'
 local git_branch='$(git_prompt_info)%{$reset_color%}'
 local vcs_info='%{$reset_color%}${vcs_info_msg_0_}%{$reset_color%}'
-
+local java_version='%{$fg[magenta]%}‹java-$(java -version 2>&1 | awk "/version/ {print $3}" | egrep -o "[0-9]+\.[0-9]+\.[_0-9]+")›%{$reset_color%}'
 
 
 
 PROMPT="╭─${user_host} ${current_dir} ${vcs_info}
 ╰─%B$%b "
-RPROMPT="${rvm_ruby}"
+RPROMPT="${java_version} - ${rvm_ruby}"
 
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[yellow]%}‹"
 ZSH_THEME_GIT_PROMPT_SUFFIX="› %{$reset_color%}"
