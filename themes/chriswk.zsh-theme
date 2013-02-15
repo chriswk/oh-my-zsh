@@ -48,6 +48,7 @@ theme_precmd () {
     vcs_info
 }
 
+
 # hg:
 # First, remove the hash from the default 'branchformat':
 zstyle ':vcs_info:hg:*' branchformat '%b'
@@ -73,14 +74,23 @@ local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
 
 local user_host='%{$terminfo[bold]$fg[green]%}%n@%m%{$reset_color%}'
 local current_dir='%{$terminfo[bold]$fg[blue]%} %~%{$reset_color%}'
-local rvm_ruby='%{$fg[red]%}‹$(rvm-prompt i v g)›%{$reset_color%}'
+
+local rvm_ruby=''
+if which rvm-prompt &> /dev/null; then
+  rvm_ruby='%{$fg[red]%}‹$(rvm-prompt i v g)›%{$reset_color%}'
+else
+  if which rbenv &> /dev/null; then
+    rvm_ruby='%{$fg[red]%}‹$(rbenv version | sed -e "s/ (set.*$//")›%{$reset_color%}'
+  fi
+fi
+
 local git_branch='$(git_prompt_info)%{$reset_color%}'
 local vcs_info='%{$reset_color%}${vcs_info_msg_0_}%{$reset_color%}'
-local java_version='%{$fg[magenta]%}‹java-$(java -version 2>&1 | awk "/version/ {print $3}" | egrep -o "[0-9]+\.[0-9]+\.[_0-9]+")›%{$reset_color%}'
+local java_version='%{$fg[magenta]%}‹j:$(java -version 2>&1 | awk "/version/ {print $3}" | egrep -o "[0-9]+\.[0-9]+\.[_0-9]+")›%{$reset_color%}'
+local date_prompt='%{$fg[blue]%}%D{[%I:%M]} %{$reset_color%}'
 
 
-
-PROMPT="╭─${user_host} %{$fg[blue]%}%D{[%I:%M]} %{$reset_color%} ${current_dir} ${vcs_info}
+PROMPT="╭─${user_host} ${date_prompt} ${current_dir} ${vcs_info}
 ╰─%B$%b "
 RPROMPT="${java_version} - ${rvm_ruby}"
 
