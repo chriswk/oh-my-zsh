@@ -80,7 +80,7 @@ local java_version='%{$fg[magenta]%}‹java-$(java -version 2>&1 | awk "/version
 
 
 
-PROMPT="╭─${user_host} ${current_dir} ${vcs_info}
+PROMPT="╭─${user_host} %{$fg[blue]%}%D{[%I:%M]} %{$reset_color%} ${current_dir} ${vcs_info}
 ╰─%B$%b "
 RPROMPT="${java_version} - ${rvm_ruby}"
 
