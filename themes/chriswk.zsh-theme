@@ -3,6 +3,13 @@ precmd() {
 }
 autoload -Uz vcs_info
 autoload -U colors && colors
+CHRISWK_GIT_BRANCH_COLOR="%{$fg[green]%}"
+CHRISWK_GIT_CLEAN_COLOR="%{$fg[green]%}"
+CHRISWK_GIT_DIRTY_COLOR="%{$fg[red]%}"
+CRUNCH_BRACKET_COLOR="%{$fg[blue]%}"
+CRUNCH_TIME_COLOR="%{$fg[yellow]%}"
+CRUNCH_RVM_COLOR="%{$fg[red]%}"
+
 zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' get-revision true
 zstyle ':vcs_info:*' unstagedstr '%F{red}*'   # display this when there are unstaged changes
@@ -48,6 +55,7 @@ theme_precmd () {
     vcs_info
 }
 
+
 # hg:
 # First, remove the hash from the default 'branchformat':
 zstyle ':vcs_info:hg:*' branchformat '%b'
@@ -73,16 +81,24 @@ local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
 
 local user_host='%{$terminfo[bold]$fg[green]%}%n@%m%{$reset_color%}'
 local current_dir='%{$terminfo[bold]$fg[blue]%} %~%{$reset_color%}'
-local rvm_ruby='%{$fg[red]%}‹$(rvm-prompt i v g)›%{$reset_color%}'
+
+if which rvm-prompt &> /dev/null; then
+  RVM_RUBY="$CRUNCH_RVM_COLOR r:\${\$(rvm-prompt i v g)#ruby-}%{$reset_color%}"
+else
+  if which rbenv &> /dev/null; then
+    RVM_RUBY='%{$fg[red]%}‹$(rbenv version | sed -e "s/ (set.*$//")›%{$reset_color%}'
+  fi
+fi
+
 local git_branch='$(git_prompt_info)%{$reset_color%}'
 local vcs_info='%{$reset_color%}${vcs_info_msg_0_}%{$reset_color%}'
+local java_version='%{$fg[magenta]%}j:$(java -version 2>&1 | awk "/version/ {print $3}" | egrep -o "[0-9]+\.[0-9]+\.[_0-9]+")%{$reset_color%}'
+local date_prompt='%{$fg[blue]%}%D{[%H:%M]} %{$reset_color%}'
 
 
-
-
-PROMPT="╭─${user_host} ${current_dir} ${vcs_info}
+PROMPT="╭─${user_host} ${date_prompt} ${current_dir} ${vcs_info}
 ╰─%B$%b "
-RPROMPT="${rvm_ruby}"
+RPROMPT="${java_version} - $RVM_RUBY"
 
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[yellow]%}‹"
 ZSH_THEME_GIT_PROMPT_SUFFIX="› %{$reset_color%}"
