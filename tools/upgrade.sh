@@ -1,7 +1,5 @@
 printf '\033[0;34m%s\033[0m\n' "Upgrading Oh My Zsh"
-
-cd $ZSH
-
+cd "$ZSH"
 if git fetch robby && git merge robby/master
 then
   printf '\033[0;32m%s\033[0m\n' '         __                                     __   '
